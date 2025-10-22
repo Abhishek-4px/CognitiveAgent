@@ -19,4 +19,3 @@ tasks= {}    # empty now to be replaced with Database later
 
 class ResearchRequest(BaseModel):
     query: str
-
