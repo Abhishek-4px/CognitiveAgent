@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException , Request
+from fastapi import FastAPI, HTTPException, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse 
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-import uuid    #unique ids for research tasks
 from app.core.logger import logger
 from app.config import settings
+from app.core.database import SessionLocal, ResearchTask, init_db
+from app.core.redis_client import redis
 
 app = FastAPI()
 
@@ -15,7 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-tasks= {}    # empty now to be replaced with Database later
+
 
 class ResearchRequest(BaseModel):
     query: str
