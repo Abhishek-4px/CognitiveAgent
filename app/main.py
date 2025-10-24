@@ -50,7 +50,7 @@ async def start_research(request: ResearchRequest):
         await session.commit()
         await session.refresh(task)
         task_id = task.id
-    await redis.lpush("research_queue", str(task_id))
+    await redis.lpush("research_queue", str(task_id))                 #type: ignore
     logger.info("Research started", task_id=task_id, query=request.query)
     return {"task_id": task_id}
 
@@ -64,7 +64,7 @@ async def check_status(task_id:int):
         return {
             "task_id": task.id,
             "status": task.status,
-            "query": task.qurey,
+            "query": task.query,
             "result": task.result,
             "error" : task.error,
             "created_at": task.created_at,
