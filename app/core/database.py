@@ -17,7 +17,7 @@ class ResearchTask(Base):
     result = Column(Text , nullable = True)
     error = Column(Text , nullable = True)
     created_at = Column(DateTime , default=datetime.utcnow)
-    created_at = Column(DateTime , onupdate=datetime.utcnow)
+    updated_at = Column(DateTime , onupdate=datetime.utcnow)
     user_id = Column(Integer)
 
 async def init_db():
