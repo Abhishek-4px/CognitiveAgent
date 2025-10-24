@@ -54,6 +54,7 @@ async def start_research(request: ResearchRequest):
     logger.info("Research started", task_id=task_id, query=request.query)
     return {"task_id": task_id}
 
+
 @app.get("/research/{task_id}")
 async def check_status(task_id:int):
     async with SessionLocal() as session:
@@ -71,3 +72,18 @@ async def check_status(task_id:int):
             "user_id": task.user_id
         }
     
+
+@app.post("/research/{task_id}/cancel")
+async def cancel_request(task_id: int):
+    await redis.set(f"cancel:{task_id}", 1)   # 1 tells rddis to concel the taskl
+    async with SessionLocal() as session:
+        task = await session.get(ResearchTask , task_id)
+        if not task:
+            raise HTTPException(status_code=404, detail="task not found")
+        task.status= "cancelled"
+        task.updated_at = datetime.utcnow()
+        await session.commit()
+    logger.info("Research cencelled", task_id = task_id)
+    return {"task_id":task_id,"status":"cancelled"}
+
+
