@@ -53,3 +53,21 @@ async def start_research(request: ResearchRequest):
     await redis.lpush("research_queue", str(task_id))
     logger.info("Research started", task_id=task_id, query=request.query)
     return {"task_id": task_id}
+
+@app.get("/research/{task_id}")
+async def check_status(task_id:int):
+    async with SessionLocal() as session:
+        task = await session.get(ResearchTask, task_id)
+        if not task:
+            raise HTTPException(status_code=404 , detail="task not found")
+        return {
+            "task_id": task.id,
+            "status": task.status,
+            "query": task.qurey,
+            "result": task.result,
+            "error" : task.error,
+            "created_at": task.created_at,
+            "updated_at": task.updated_at,
+            "user_id": task.user_id
+        }
+    
