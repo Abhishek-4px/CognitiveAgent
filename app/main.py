@@ -87,3 +87,6 @@ async def cancel_request(task_id: int):
     return {"task_id":task_id,"status":"cancelled"}
 
 
+@app.get("/health")
+async def health_check():
+    return {"status":"ok"}
